@@ -64,12 +64,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>3.0.3</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
                 <version>1.9.4</version>
@@ -118,6 +112,9 @@
                 <artifactId>wechatpay-apache-httpclient</artifactId>
                 <version>0.4.9</version>
             </dependency>
+
+
+            <!--第3代OpenAPI-->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

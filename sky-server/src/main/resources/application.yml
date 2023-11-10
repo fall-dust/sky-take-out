@@ -12,18 +12,9 @@ spring:
     username: ${sky.datasource.username}
     password: ${sky.datasource.password}
     type: com.alibaba.druid.pool.DruidDataSource # 指定数据库连接池
-  mvc:
-    pathmatch:
-      # 解决Springboot和Swagger2版本冲突
-      matching-strategy: ant_path_matcher
-
-#mybatis:
-#  #mapper配置文件
-#  mapper-locations: classpath:mapper/*.xml
-#  type-aliases-package: com.sky.entity
-#  configuration:
-#    #开启驼峰命名
-#    map-underscore-to-camel-case: true
+  jackson:
+    serialization:
+      fail-on-unwrapped-type-identifiers:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml # 默认：classpath*:/mapper/**/*.xml
@@ -40,20 +31,10 @@ logging:
         service: info
         controller: info
 
-sky:
-  jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
-    # 设置jwt过期时间
-    admin-ttl: 7200000
-    # 设置前端传递过来的令牌名称
-    admin-token-name: token
-
 springdoc:
   swagger-ui:
     enabled: true  # 开启/禁止swagger，默认为true
     path: /swagger3.html  # 修改Swagger UI 页面的请求路径。默认情况下，Swagger UI 页面将在以下 url 中提供：`http://server:port/context-path/swagger-ui.html`（server：server：服务器名称或 IP；port：服务器端口；context-path：应用程序的上下文路径）
-
   api-docs:
     enabled: true # 开启/禁止api-docs
     # OpenAPI 描述将在以下 url 中提供，格式为 json：http://server:port/context-path/swagger-ui.htmlhttp://server:port/context-path/v3/api-docs（server：server：服务器名称或 IP；port：服务器端口；context-path：应用程序的上下文路径）
@@ -73,3 +54,12 @@ springdoc:
         -
   pre-loading-enabled: true # 提前加载
   default-support-form-data: true
+---
+sky:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: fallingdust
+    # 设置jwt过期时间
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
