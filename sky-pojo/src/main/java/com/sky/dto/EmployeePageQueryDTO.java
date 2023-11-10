@@ -1,10 +1,12 @@
 package com.sky.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@Schema(description = "查询员工接收的数据格式")
 public class EmployeePageQueryDTO implements Serializable {
 
     //员工姓名

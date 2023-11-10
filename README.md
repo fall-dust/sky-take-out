@@ -37,3 +37,69 @@ Springdoc官网：https://springdoc.org/
 本模块使用到了`ThreadLocal`技术。
 
 `ThreadLocal`叫做***线程变量***，意思是ThreadLocal中填充的变量属于当前线程，该变量对其他线程而言是隔离的，也就是说该变量是当前线程独有的变量。`ThreadLocal`为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。
+
+### 分页查询
+
+在Spring MVC中，`HttpMessageConverter`用于在HTTP请求和响应之间转换对象。默认情况下，Spring提供了一些常用的`HttpMessageConverter`，例如`StringHttpMessageConverter`、`MappingJackson2HttpMessageConverter`等。其中，`MappingJackson2HttpMessageConverter`使用Jackson库将Java对象转换为JSON格式，并将JSON格式的数据转换为Java对象。
+
+项目中，我们自建了一个`MappingJackson2HttpMessageConverter`，目的是将日期对象（`LocalDate`/`LocalTime`/`LocalDateTime`）格式化为我们需要的格式。
+
+
+
+`MappingJackson2HttpMessageConverter`需要一个`ObjectMapper`，下面是我们自建的`ObjectMapper`的子类：
+
+
+
+```java
+/**
+ * 对象映射器:基于jackson将Java对象转为json，或者将json转为Java对象<br>
+ * 将JSON解析为Java对象的过程称为 [从JSON反序列化Java对象]<br>
+ * 从Java对象生成JSON的过程称为 [序列化Java对象到JSON]
+ */
+public class JacksonObjectMapper extends ObjectMapper {
+
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    //public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
+
+    public JacksonObjectMapper() {
+        super();
+        //收到未知属性时不报异常
+        this.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        //反序列化时，属性不存在的兼容处理
+        // this.getDeserializationConfig().withoutFeatures(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        SimpleModule simpleModule = new SimpleModule()
+                .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
+                .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
+                .addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)))
+                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
+                .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
+                .addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
+
+        //注册功能模块 例如，可以添加自定义序列化器和反序列化器
+        this.registerModule(simpleModule);
+    }
+}
+```
+
+
+
+添加消息转换器：
+
+```java
+    /**
+     * 拓展消息转换器
+     */
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        log.info("拓展消息转换器...");
+        // MappingJackson2HttpMessageConverter的实现只能有一个生效，如果不删除原本的实现，我们新增的就不会被使用。
+        converters.removeIf(httpMessageConverter -> httpMessageConverter instanceof MappingJackson2HttpMessageConverter);
+        // 当然，我们也可以将我们添加的转换器放到其他 MappingJackson2HttpMessageConverter实现类 的前面。
+        converters.add(0, new MappingJackson2HttpMessageConverter(new JacksonObjectMapper()));
+    }
+```
+

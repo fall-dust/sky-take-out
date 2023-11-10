@@ -1,10 +1,13 @@
 package com.sky.controller.admin;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
@@ -19,10 +22,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +49,7 @@ public class EmployeeController {
      */
     @Operation(summary = "登录验证", description = "登录验证功能")
     @PostMapping("/login")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "员工登录时传递的数据模型")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
@@ -83,10 +84,17 @@ public class EmployeeController {
 
     @PostMapping
     @Operation(summary = "添加员工", description = "添加员工")
-    @Parameters({@Parameter(name = "EmployeeDTO", description = "添加员工接收的数据格式")})
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "添加员工接收的数据格式")
     public Result<String> save(@RequestBody EmployeeDTO employeeDTO) {
         log.info("添加员工{}", employeeDTO);
         employeeService.save(employeeDTO);
         return Result.success();
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页查询", description = "分页查询")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "")
+    public Result<PageResult<Employee>> page(EmployeePageQueryDTO employeePageQueryDTO) {
+        return Result.success(employeeService.pageList(employeePageQueryDTO));
     }
 }

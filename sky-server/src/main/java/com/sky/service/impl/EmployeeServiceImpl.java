@@ -1,5 +1,8 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
@@ -7,11 +10,13 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +77,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
      * @param employeeDTO 员工数据模型
      */
     @Override
-    public int save(EmployeeDTO employeeDTO) {
+    public void save(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);// 拷贝属性（属性名须一致）
 
@@ -85,7 +90,30 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         employee.setUpdateTime(now);
         employee.setCreateUser(currentId);
         employee.setUpdateUser(currentId);
-        return employeeMapper.insert(employee);
+        employeeMapper.insert(employee);
     }
+
+    /**
+     * 分页查询员工
+     *
+     * @param employeePageQueryDTO 分页查询员工接收的数据格式
+     * @return {@link PageResult}
+     */
+    @Override
+    public PageResult<Employee> pageList(EmployeePageQueryDTO employeePageQueryDTO) {
+        Page<Employee> page = new Page<>(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+        LambdaQueryWrapper<Employee> employeeLambdaQueryWrapper = new LambdaQueryWrapper<>();// 条件构造器
+        employeeLambdaQueryWrapper = employeeLambdaQueryWrapper
+                .like(employeePageQueryDTO.getName() != null, Employee::getName/*如果直接对new LambdaQueryWrapper<>()链式调用抽象包装器，则无法使用该方法引用*/, employeePageQueryDTO.getName());
+
+        page = employeeMapper.selectPage(page, employeeLambdaQueryWrapper);
+
+        PageResult<Employee> employeePageResult = new PageResult<>();
+        employeePageResult.setTotal(page.getTotal());
+        employeePageResult.setRecords(page.getRecords());
+        return employeePageResult;
+    }
+
 
 }
