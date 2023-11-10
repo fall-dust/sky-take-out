@@ -4,6 +4,16 @@
 
 黑马程序员实战项目：苍穹外卖（前后端分离）
 
+## Swagger（Springdoc）
+
+使用Swagger，你只需要按照它的规范去定义接口及接口相关的信息，就可以做到生成接口文档，以及在线接口调试页面。官网：https://swagger.io/。
+
+Knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案，但是它是基于Springfox的，Springfox已经被淘汰，Springboot3.0已不再支持。
+
+---
+
+Springdoc官网：https://springdoc.org/
+
 ## 完善登录功能
 
 ### 密码加密
@@ -16,13 +26,14 @@
 
 [^1]:单向加密算法：在介绍MD5算法前，很有必要解释一下单向加密算法。单向加密，人如其名，就是只能单向对明文进行加密，而不能逆向通过密文得到明文。该算法在加密过程中，在得到明文后，经过加密算法得到密文，不需要使用密钥。因为没有密钥，所以就无法通过密文得到明文。
 
-## Swagger（Springdoc）
+## 用户管理
 
-使用Swagger，你只需要按照它的规范去定义接口及接口相关的信息，就可以做到生成接口文档，以及在线接口调试页面。官网：https://swagger.io/。
 
-Knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案，但是它是基于Springfox的，Springfox已经被淘汰，Springboot3.0已不再支持。
 
----
+### 新增用户
 
-Springdoc官网：https://springdoc.org/
+#### ThreadLocal
 
+本模块使用到了`ThreadLocal`技术。
+
+`ThreadLocal`叫做***线程变量***，意思是ThreadLocal中填充的变量属于当前线程，该变量对其他线程而言是隔离的，也就是说该变量是当前线程独有的变量。`ThreadLocal`为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。

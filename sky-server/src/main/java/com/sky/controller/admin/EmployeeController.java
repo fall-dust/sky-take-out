@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
@@ -8,9 +9,13 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +34,7 @@ import java.util.Map;
 @RequestMapping("/admin/employee")
 @Slf4j
 @Tag(name = "员工管理", description = "员工管理")
+@OpenAPIDefinition(info = @Info(title = "员工管理", description = "这里是描述信息"), extensions = {@Extension(properties = {@ExtensionProperty(name = "", value = "")})})
 public class EmployeeController {
 
     @Autowired
@@ -42,14 +48,13 @@ public class EmployeeController {
      * @param employeeLoginDTO 员工登录时传递的数据模型
      */
     @Operation(summary = "登录验证", description = "登录验证功能")
-    @Parameters({@Parameter(name = "员工登录时传递的数据模型")})// 参数信息。
     @PostMapping("/login")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
         Employee employee = employeeService.login(employeeLoginDTO);
 
-        //登录成功后，生成jwt令牌
+        // 登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
         String token = JwtUtil.createJWT(
@@ -76,4 +81,12 @@ public class EmployeeController {
         return Result.success();
     }
 
+    @PostMapping
+    @Operation(summary = "添加员工", description = "添加员工")
+    @Parameters({@Parameter(name = "EmployeeDTO", description = "添加员工接收的数据格式")})
+    public Result<String> save(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("添加员工{}", employeeDTO);
+        employeeService.save(employeeDTO);
+        return Result.success();
+    }
 }

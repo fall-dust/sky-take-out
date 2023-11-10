@@ -17,7 +17,7 @@ public class JwtUtil {
      * @param secretKey jwt秘钥
      * @param ttlMillis jwt过期时间(毫秒)
      * @param claims    设置的信息
-     * @return
+     * @return JWT令牌
      */
     public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
@@ -44,16 +44,14 @@ public class JwtUtil {
      *
      * @param secretKey jwt秘钥 此秘钥一定要保留好在服务端, 不能暴露出去, 否则sign就可以被伪造, 如果对接多个客户端建议改造成多个
      * @param token     加密后的token
-     * @return
+     * @return 解密之后的 {@link Claims} 对象，即JWT的第二部分：Payload（有效荷载）。
      */
     public static Claims parseJWT(String secretKey, String token) {
         // 得到DefaultJwtParser
-        Claims claims = Jwts.parser()
-                // 设置签名的秘钥
-                .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
-                // 设置需要解析的jwt
-                .parseClaimsJws(token).getBody();
-        return claims;
+        return Jwts.parser()
+                .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))// 设置签名的秘钥。也必须传入UTF-8字节数组
+                .parseClaimsJws(token)// 设置需要解析的jwt
+                .getBody();// 获取有效荷载
     }
 
 }

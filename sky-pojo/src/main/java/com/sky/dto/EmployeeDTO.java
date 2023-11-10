@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 添加员工接收的数据格式
+ */
 @Data
 public class EmployeeDTO implements Serializable {
 

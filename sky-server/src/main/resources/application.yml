@@ -17,13 +17,20 @@ spring:
       # 解决Springboot和Swagger2版本冲突
       matching-strategy: ant_path_matcher
 
-mybatis:
-  #mapper配置文件
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.sky.entity
+#mybatis:
+#  #mapper配置文件
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.sky.entity
+#  configuration:
+#    #开启驼峰命名
+#    map-underscore-to-camel-case: true
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml # 默认：classpath*:/mapper/**/*.xml
+  # （Configuration）的配置大都为 MyBatis 原生支持的配置，这意味着您可以通过 MyBatis XML 配置文件的形式进行配置。
   configuration:
-    #开启驼峰命名
-    map-underscore-to-camel-case: true
+    mapUnderscoreToCamelCase: true # 默认：true
+  type-aliases-package:
 
 logging:
   level:
@@ -63,5 +70,6 @@ springdoc:
         - com.sky.controller
       paths-to-match: # 匹配的请求路径
         - /admin/employee/**
-
-  pre-loading-enabled: true
+        -
+  pre-loading-enabled: true # 提前加载
+  default-support-form-data: true

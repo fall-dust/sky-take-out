@@ -14,7 +14,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootConfiguration
 @Slf4j
 public class WebMvcConfiguration implements WebMvcConfigurer {
-
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
