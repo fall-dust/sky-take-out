@@ -30,5 +30,5 @@ public interface EmployeeService extends IService<Employee> {
      * @param employeePageQueryDTO 分页查询员工接收的数据格式
      * @return {@link PageResult}
      */
-    PageResult<Employee> pageList(EmployeePageQueryDTO employeePageQueryDTO);
+    PageResult<Employee> page(EmployeePageQueryDTO employeePageQueryDTO);
 }

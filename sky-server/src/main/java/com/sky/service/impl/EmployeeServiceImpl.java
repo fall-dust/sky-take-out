@@ -100,7 +100,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
      * @return {@link PageResult}
      */
     @Override
-    public PageResult<Employee> pageList(EmployeePageQueryDTO employeePageQueryDTO) {
+    public PageResult<Employee> page(EmployeePageQueryDTO employeePageQueryDTO) {
         Page<Employee> page = new Page<>(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
 
         LambdaQueryWrapper<Employee> employeeLambdaQueryWrapper = new LambdaQueryWrapper<>();// 条件构造器

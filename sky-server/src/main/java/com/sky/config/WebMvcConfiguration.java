@@ -1,5 +1,7 @@
 package com.sky.config;
 
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.sky.interceptor.JwtTokenAdminInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,11 +54,14 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      * 拓展消息转换器
      */
     @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
         log.info("拓展消息转换器...");
-        // MappingJackson2HttpMessageConverter的实现只能有一个生效，如果不删除原本的实现，我们新增的就不会被使用。
-        converters.removeIf(httpMessageConverter -> httpMessageConverter instanceof MappingJackson2HttpMessageConverter);
-        // 当然，我们也可以将我们添加的转换器放到其他 MappingJackson2HttpMessageConverter实现类 的前面。
-        converters.add(0, new MappingJackson2HttpMessageConverter(new JacksonObjectMapper()));
+        /*
+         * MappingJackson2HttpMessageConverter的实现只能有一个生效，如果不删除原本的实现，我们新增的就不会被使用。
+         * 当然，我们也可以将我们添加的转换器放到其他 MappingJackson2HttpMessageConverter实现类 的前面。
+         * */
+        // TODO 替换掉默认的 MappingJackson2HttpMessageConverter 后，Swagger3就会出现问题。该问题暂时无法解决。
+        // converters.removeIf(httpMessageConverter -> httpMessageConverter instanceof MappingJackson2HttpMessageConverter);
+        converters.add(new MappingJackson2HttpMessageConverter(new JacksonObjectMapper()));
     }
 }

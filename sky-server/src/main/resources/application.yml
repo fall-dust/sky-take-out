@@ -35,6 +35,8 @@ springdoc:
   swagger-ui:
     enabled: true  # 开启/禁止swagger，默认为true
     path: /swagger3.html  # 修改Swagger UI 页面的请求路径。默认情况下，Swagger UI 页面将在以下 url 中提供：`http://server:port/context-path/swagger-ui.html`（server：server：服务器名称或 IP；port：服务器端口；context-path：应用程序的上下文路径）
+    version:
+
   api-docs:
     enabled: true # 开启/禁止api-docs
     # OpenAPI 描述将在以下 url 中提供，格式为 json：http://server:port/context-path/swagger-ui.htmlhttp://server:port/context-path/v3/api-docs（server：server：服务器名称或 IP；port：服务器端口；context-path：应用程序的上下文路径）
@@ -51,9 +53,13 @@ springdoc:
         - com.sky.controller
       paths-to-match: # 匹配的请求路径
         - /admin/employee/**
-        -
   pre-loading-enabled: true # 提前加载
+
   default-support-form-data: true
+
+  paths-to-exclude: # 配置不包含在swagger文档中的api
+    - /api/test/**
+    - /api/mockito/data
 ---
 sky:
   jwt:

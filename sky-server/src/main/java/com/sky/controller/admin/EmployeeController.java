@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
@@ -12,18 +13,14 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.extensions.Extension;
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +31,7 @@ import java.util.Map;
 @RequestMapping("/admin/employee")
 @Slf4j
 @Tag(name = "员工管理", description = "员工管理")
-@OpenAPIDefinition(info = @Info(title = "员工管理", description = "这里是描述信息"), extensions = {@Extension(properties = {@ExtensionProperty(name = "", value = "")})})
+//@OpenAPIDefinition(info = @Info(title = "员工管理", description = "这里是描述信息"), extensions = {@Extension(properties = {@ExtensionProperty(name = "", value = "")})})
 public class EmployeeController {
 
     @Autowired
@@ -78,7 +75,7 @@ public class EmployeeController {
      */
     @PostMapping("/logout")
     @Operation(summary = "退出登录", description = "退出登录")
-    public Result<String> logout() {
+    public Result<Object> logout() {
         return Result.success();
     }
 
@@ -93,8 +90,53 @@ public class EmployeeController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询", description = "分页查询")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "分页查询")
     public Result<PageResult<Employee>> page(EmployeePageQueryDTO employeePageQueryDTO) {
-        return Result.success(employeeService.pageList(employeePageQueryDTO));
+        return Result.success(employeeService.page(employeePageQueryDTO));
+    }
+
+    /**
+     * 启用/禁用账号
+     *
+     * @return {@link Result}
+     */
+    @PostMapping("/status/{status}")
+    @Operation(summary = "启用/禁用账号", description = "启用/禁用账号")
+    public Result<Object> changeStatus(@PathVariable Integer status, @RequestParam Long id) {
+        Employee employee = Employee.builder()
+                .id(id)
+                .status(status)
+                .build();
+        employeeService.updateById(employee);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工
+     *
+     * @param id 应该ID
+     * @return {@link Result}
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "根据id查询员工", description = "根据id查询员工")
+    public Result<Employee> getById(@PathVariable Long id) {
+        return Result.success(employeeService.getById(id));
+    }
+
+    /**
+     * 更新员工
+     *
+     * @param employeeDTO 添加员工接收的数据格式
+     * @return {@link Result}
+     */
+    @PutMapping
+    @Operation(summary = "更新员工", description = "更新员工")
+    public Result<Object> update(@RequestBody EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);// 属性拷贝
+        employee.setUpdateTime(LocalDateTime.now());// 设置更新时间
+        // 更新
+        employeeService.update(employee, new LambdaUpdateWrapper<Employee>().eq(Employee::getId, employee.getId()));
+        return Result.success();
     }
 }
