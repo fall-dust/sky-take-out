@@ -40,6 +40,8 @@ Springdoc官网：https://springdoc.org/
 
 ### 分页查询
 
+##### `MappingJackson2HttpMessageConverter`
+
 在Spring MVC中，`HttpMessageConverter`用于在HTTP请求和响应之间转换对象。默认情况下，Spring提供了一些常用的`HttpMessageConverter`，例如`StringHttpMessageConverter`、`MappingJackson2HttpMessageConverter`等。其中，`MappingJackson2HttpMessageConverter`使用Jackson库将Java对象转换为JSON格式，并将JSON格式的数据转换为Java对象。
 
 项目中，我们自建了一个`MappingJackson2HttpMessageConverter`，目的是将日期对象（`LocalDate`/`LocalTime`/`LocalDateTime`）格式化为我们需要的格式。

@@ -32,6 +32,8 @@ logging:
         controller: info
 
 springdoc:
+  packages-to-scan: # 指定要扫描的包（及其子包）
+    - com.sky.controller
   swagger-ui:
     enabled: true  # 开启/禁止swagger，默认为true
     path: /swagger3.html  # 修改Swagger UI 页面的请求路径。默认情况下，Swagger UI 页面将在以下 url 中提供：`http://server:port/context-path/swagger-ui.html`（server：server：服务器名称或 IP；port：服务器端口；context-path：应用程序的上下文路径）
@@ -46,14 +48,8 @@ springdoc:
 
   use-management-port: false # 在执行器管理端口上公开 swagger-ui。默认值：false。
 
-  group-configs: # 分组配置
-    - group: employee # 组名
-      display-name: 员工管理 # 显示的名称
-      packages-to-scan: # 指定要扫描的包（及其子包）
-        - com.sky.controller
-      paths-to-match: # 匹配的请求路径
-        - /admin/employee/**
-  pre-loading-enabled: true # 提前加载
+  pre-loading-enabled: false # 提前加载
+
 
   default-support-form-data: true
 

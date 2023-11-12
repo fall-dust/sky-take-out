@@ -9,13 +9,13 @@ import java.io.Serializable;
 @Schema(description = "查询员工接收的数据格式")
 public class EmployeePageQueryDTO implements Serializable {
 
-    //员工姓名
-    private String name;
+    @Schema(description = "员工姓名")
+    private String name;// 员工姓名
 
-    //页码
-    private int page;
+    @Schema(description = "页码")
+    private int page;// 页码
 
-    //每页显示记录数
-    private int pageSize;
+    @Schema(description = "每页显示记录数")
+    private int pageSize;// 每页显示记录数
 
 }

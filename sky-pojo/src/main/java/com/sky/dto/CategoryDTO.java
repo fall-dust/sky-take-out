@@ -1,22 +1,24 @@
 package com.sky.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@Schema(description = "新增菜品传递的数据模型")
 public class CategoryDTO implements Serializable {
 
-    //主键
-    private Long id;
+    @Schema(description = "主键")
+    private Long id;// 主键
 
-    //类型 1 菜品分类 2 套餐分类
-    private Integer type;
+    @Schema(description = "类型。1：菜品分类；2：套餐分类")
+    private Integer type;// 类型。1：菜品分类；2：套餐分类
 
-    //分类名称
-    private String name;
+    @Schema(description = "分类名称")
+    private String name;// 分类名称
 
-    //排序
-    private Integer sort;
+    @Schema(description = "排序")
+    private Integer sort;// 排序
 
 }

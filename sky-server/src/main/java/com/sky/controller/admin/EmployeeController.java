@@ -1,7 +1,6 @@
 package com.sky.controller.admin;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
@@ -30,7 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
-@Tag(name = "员工管理", description = "员工管理")
+@Tag(name = "员工管理", description = "EmployeeController")
 //@OpenAPIDefinition(info = @Info(title = "员工管理", description = "这里是描述信息"), extensions = {@Extension(properties = {@ExtensionProperty(name = "", value = "")})})
 public class EmployeeController {
 
@@ -98,11 +97,14 @@ public class EmployeeController {
     /**
      * 启用/禁用账号
      *
+     * @param status 账号状态。0：禁用；1：启用
+     * @param id     ID
      * @return {@link Result}
      */
     @PostMapping("/status/{status}")
     @Operation(summary = "启用/禁用账号", description = "启用/禁用账号")
     public Result<Object> changeStatus(@PathVariable Integer status, @RequestParam Long id) {
+        log.info((status == 1 ? "启用ID为%s的账号..." : "禁用ID为%s账号...").formatted(id));
         Employee employee = Employee.builder()
                 .id(id)
                 .status(status)

@@ -17,6 +17,7 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements EmployeeService {
@@ -102,18 +104,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     @Override
     public PageResult<Employee> page(EmployeePageQueryDTO employeePageQueryDTO) {
         Page<Employee> page = new Page<>(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
-
         LambdaQueryWrapper<Employee> employeeLambdaQueryWrapper = new LambdaQueryWrapper<>();// 条件构造器
         employeeLambdaQueryWrapper = employeeLambdaQueryWrapper
                 .like(employeePageQueryDTO.getName() != null, Employee::getName/*如果直接对new LambdaQueryWrapper<>()链式调用抽象包装器，则无法使用该方法引用*/, employeePageQueryDTO.getName());
-
         page = employeeMapper.selectPage(page, employeeLambdaQueryWrapper);
-
-        PageResult<Employee> employeePageResult = new PageResult<>();
-        employeePageResult.setTotal(page.getTotal());
-        employeePageResult.setRecords(page.getRecords());
-        return employeePageResult;
+        return new PageResult<>(page.getTotal(), page.getRecords());
     }
-
-
 }
